@@ -35,25 +35,24 @@ double impose_simple_mix_low(double first, double second){
     return first * 0.5 + second * 0.5;
 }
 
+double interpolate_440_to_600(double progress){
+    return 440 + (600 - 440) * progress;
+}
+
 int main(){
     panic_if_sdl_err(SDL_Init(SDL_INIT_AUDIO));
 
-    Snippet s, s1, s2;
-    snippet_empty(&s);
-    snippet_empty(&s1);
-    snippet_empty(&s2);
+    #define SNIPPS 10
 
-    snippet_fill_freq(&s, 1.0, PITCH);
-    snippet_fill_freq(&s1, 1.0, 500);
-    snippet_fill_freq(&s2, 1.0, 600);
+    Snippet s[SNIPPS];
+    for (int i = 0; i < SNIPPS; i++) snippet_empty(s + i);
+    
+    snippet_fill_freq_inter(s, 1.0, interpolate_440_to_600);
 
-    snippet_impose(&s, &s1, impose_simple_mix);
-    snippet_impose(&s, &s2, impose_simple_mix_low);
+    play_snippet(s);
 
-    play_snippet(&s);
-    snippet_free(&s);
-    snippet_free(&s1);
-    snippet_free(&s2);
+    for (int i = 0; i < SNIPPS; i++) snippet_free(s + i);
+    
 
     return 0;
 }

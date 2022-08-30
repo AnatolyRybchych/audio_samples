@@ -122,3 +122,23 @@ void snippet_clone(Snippet *dst, const Snippet *src){
     );
     memcpy(dst->samples, src->samples, dst->samples_cnt * sizeof(double));
 }
+
+double note_freq(double note_number){
+    return PITCH * pow(2.0, note_number / 12.0);
+}
+
+void snippet_fill_freq_inter(Snippet *snippet, double seconds_duration, InterpolationFunc interpolate){
+    snippet->samples = realloc(
+        snippet->samples,
+        (snippet->samples_cnt = SNIPPET_FREQ * seconds_duration) * sizeof(double)
+    );
+
+    double *curr = snippet->samples;
+    double *end = curr + snippet->samples_cnt;
+
+    while (curr != end){
+        double freq = interpolate((curr - snippet->samples) / (double)snippet->samples_cnt);
+        *curr = sin((end - curr) * 2.0 * M_PI * freq / SNIPPET_FREQ);
+        curr++;
+    }
+}

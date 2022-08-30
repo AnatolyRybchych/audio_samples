@@ -44,6 +44,12 @@ void snippet_impose(Snippet *snippet, Snippet *over, ImposeFunc impose);
 // make clones data of src
 void snippet_clone(Snippet *dst, const Snippet *src);
 
+//to get perfect frequency use int note_number from 0 to 12 
+double note_freq(double note_number);
+
+// initializes snippet with data using interpolate
+void snippet_fill_freq_inter(Snippet *snippet, double seconds_duration, InterpolationFunc interpolate);
+
 // clears snippet buffer
 void snippet_free(Snippet *snippet);
 
