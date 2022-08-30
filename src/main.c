@@ -10,12 +10,22 @@ void play_snippet(const Snippet *snippet);
 int main(){
     panic_if_sdl_err(SDL_Init(SDL_INIT_AUDIO));
 
-    Snippet s;
-    empty_snippet(&s);
+    Snippet s, s1, s2;
+    snippet_empty(&s);
+    snippet_empty(&s1);
+    snippet_empty(&s2);
 
-    snippet_fill_freq(&s, 1.0, PITCH);
+    snippet_fill_freq(&s1, 0.5, PITCH);
+    snippet_fill_freq(&s2, 0.5, 600);
+
+    snippet_combine(&s, &s1, &s2);
+    snippet_append(&s, &s1);
+    snippet_append(&s, &s2);
 
     play_snippet(&s);
+    snippet_free(&s);
+    snippet_free(&s1);
+    snippet_free(&s2);
 
     return 0;
 }

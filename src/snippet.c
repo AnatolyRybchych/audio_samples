@@ -4,13 +4,14 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 
-void empty_snippet(Snippet *snippet){
+void snippet_empty(Snippet *snippet){
     snippet->samples_cnt = 0;
     snippet->samples = NULL;
 }
 
-void free_snippet(Snippet *snippet){
+void snippet_free(Snippet *snippet){
     if(snippet == NULL) return;
 
     snippet->samples = realloc(
@@ -32,4 +33,38 @@ void snippet_fill_freq(Snippet *snippet, double seconds_duration, double freq){
         *curr = sin((end - curr) * 2.0 * M_PI * freq / SNIPPET_FREQ);
         curr++;
     }
+}
+
+void snippet_combine(Snippet *result, const Snippet *first, const Snippet *second){
+    result->samples = realloc(
+        result->samples,
+        (result->samples_cnt = first->samples_cnt + second->samples_cnt)
+            * sizeof(double)
+    );
+
+    memcpy(
+        result->samples, 
+        first->samples, 
+        first->samples_cnt * sizeof(double)
+    );
+
+    memcpy(
+        result->samples + first->samples_cnt, 
+        second->samples, 
+        second->samples_cnt * sizeof(double)
+    );
+}
+
+void snippet_append(Snippet *snippet, const Snippet *second){
+    snippet->samples = realloc(
+        snippet->samples,
+        (snippet->samples_cnt = snippet->samples_cnt + second->samples_cnt)
+            * sizeof(double)
+    );
+
+    memcpy(
+        snippet->samples + snippet->samples_cnt - second->samples_cnt, 
+        second->samples, 
+        second->samples_cnt * sizeof(double)
+    );
 }
