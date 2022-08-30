@@ -7,8 +7,16 @@ void panic_if_sdl_err(int err);
 void panic(const char *msg);
 void play_snippet(const Snippet *snippet);
 
-double linear(double progress){
+double interpolate_linear(double progress){
     return progress;
+}
+
+double interpolate_sqr(double progress){
+    return progress * progress;
+}
+
+double interpolate_sqrt(double progress){
+    return sqrt(progress);
 }
 
 int main(){
@@ -20,8 +28,8 @@ int main(){
     snippet_empty(&s2);
 
     snippet_fill_freq(&s1, 0.3, PITCH);
-    snippet_attack(&s1, 0.1, linear);
-    snippet_release(&s1, 0.1, linear);
+    snippet_attack(&s1, 0.02, interpolate_sqr);
+    snippet_release(&s1, 0.02, interpolate_sqrt);
     snippet_fill_freq(&s2, 0.5, 600);
 
     snippet_append(&s, &s1);

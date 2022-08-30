@@ -16,12 +16,25 @@ struct Snippet{
     double *samples;
 };
 
+// creates empty snippet 
 void snippet_empty(Snippet *snippet);
+
+// initializes snippet with data using frequency
 void snippet_fill_freq(Snippet *snippet, double seconds_duration, double freq);
+
+// initialize snippet "result" using data of "first" and "secoond"
 void snippet_combine(Snippet *result, const Snippet *first, const Snippet *second);
+
+// appends data of "second" to "snippet"
 void snippet_append(Snippet *snippet, const Snippet *second);
+
+// multiplies amplitude of data on interval from start to duration by value : (interpolate(time/duration))
 void snippet_attack(Snippet *snippet, double duration, double (*interpolate)(double progress));
+
+// multiplies amplitude of data on interval from end - duration end by value : (interpolate((end - time)/duration))
 void snippet_release(Snippet *snippet, double duration, InterpolationFunc interpolate);
+
+// clears snippet buffer
 void snippet_free(Snippet *snippet);
 
 #endif //SNIPPET_H
