@@ -4,12 +4,12 @@ SRC_DIR		:= src
 
 CC			:= cc
 CARGS		:= -Wall -Wextra -Werror -pedantic -ggdb
-LIBS		:= -lSDL2
+LIBS		:= -lSDL2 -lm
 
 OUTPUT_DIR	:= .
 OUTPUT		:= run
 
-objects		+= main.o
+objects		+= main.o snippet.o
 
 build: $(addprefix $(OBJ_DIR)/, $(objects))
 	$(CC) $(CARGS) -o $(OUTPUT_DIR)/$(OUTPUT) $^ $(LIBS)
