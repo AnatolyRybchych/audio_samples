@@ -98,3 +98,27 @@ void snippet_release(Snippet *snippet, double duration, double (*interpolate)(do
         curr++;
     }
 }
+
+void snippet_impose(Snippet *snippet, Snippet *over, ImposeFunc impose){
+    int samples_cnt = MIN(snippet->samples_cnt, over->samples_cnt);
+
+    double *snippet_curr = snippet->samples;
+    double *over_curr = over->samples;
+    double *snippet_end = snippet_curr + samples_cnt;
+
+    while (snippet_curr != snippet_end){
+        *snippet_curr = impose(*snippet_curr, *over_curr);
+
+        snippet_curr++;
+        over_curr++;
+    }
+}
+
+void snippet_clone(Snippet *dst, const Snippet *src){
+    dst->samples_cnt = src->samples_cnt;
+    dst->samples = realloc(
+        dst->samples,
+        dst->samples_cnt * sizeof(double)
+    );
+    memcpy(dst->samples, src->samples, dst->samples_cnt * sizeof(double));
+}

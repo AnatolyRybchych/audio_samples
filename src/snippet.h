@@ -7,6 +7,9 @@
 
 //progress is on range [0.0, 1.0]
 typedef double (*InterpolationFunc)(double progress);
+
+//should return value in range [-1.0; 1.0]
+typedef double (*ImposeFunc)(double first, double second);
 typedef struct Snippet Snippet;
 
 // for SNIPPET_FREQ hz mono audio 
@@ -28,11 +31,18 @@ void snippet_combine(Snippet *result, const Snippet *first, const Snippet *secon
 // appends data of "second" to "snippet"
 void snippet_append(Snippet *snippet, const Snippet *second);
 
-// multiplies amplitude of data on interval from start to duration by value : (interpolate(time/duration))
+// multiplies amplitude on interval from start to duration by value : (interpolate(time/duration))
 void snippet_attack(Snippet *snippet, double duration, double (*interpolate)(double progress));
 
-// multiplies amplitude of data on interval from end - duration end by value : (interpolate((end - time)/duration))
+// multiplies amplitude on interval from (end - duration) to end by value : (interpolate((end - time)/duration))
 void snippet_release(Snippet *snippet, double duration, InterpolationFunc interpolate);
+
+// foreach sample in first snippet imposes another snippet
+// if snippet duration > over duration, imposes only on over duration
+void snippet_impose(Snippet *snippet, Snippet *over, ImposeFunc impose);
+
+// make clones data of src
+void snippet_clone(Snippet *dst, const Snippet *src);
 
 // clears snippet buffer
 void snippet_free(Snippet *snippet);

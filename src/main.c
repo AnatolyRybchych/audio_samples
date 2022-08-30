@@ -19,6 +19,22 @@ double interpolate_sqrt(double progress){
     return sqrt(progress);
 }
 
+double impose_simple_mix(double first, double second){
+    double result = first + second;
+    if(result > 1.0){
+        result = 1.0;
+    }
+    else if(result < -1.0){
+        result = -1.0;
+    }
+    
+    return result;
+}
+
+double impose_simple_mix_low(double first, double second){
+    return first * 0.5 + second * 0.5;
+}
+
 int main(){
     panic_if_sdl_err(SDL_Init(SDL_INIT_AUDIO));
 
@@ -27,14 +43,12 @@ int main(){
     snippet_empty(&s1);
     snippet_empty(&s2);
 
-    snippet_fill_freq(&s1, 0.3, PITCH);
-    snippet_attack(&s1, 0.02, interpolate_sqr);
-    snippet_release(&s1, 0.02, interpolate_sqrt);
-    snippet_fill_freq(&s2, 0.5, 600);
+    snippet_fill_freq(&s, 1.0, PITCH);
+    snippet_fill_freq(&s1, 1.0, 500);
+    snippet_fill_freq(&s2, 1.0, 600);
 
-    snippet_append(&s, &s1);
-    snippet_append(&s, &s1);
-    snippet_append(&s, &s1);
+    snippet_impose(&s, &s1, impose_simple_mix);
+    snippet_impose(&s, &s2, impose_simple_mix_low);
 
     play_snippet(&s);
     snippet_free(&s);
