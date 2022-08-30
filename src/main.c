@@ -7,6 +7,10 @@ void panic_if_sdl_err(int err);
 void panic(const char *msg);
 void play_snippet(const Snippet *snippet);
 
+double linear(double progress){
+    return progress;
+}
+
 int main(){
     panic_if_sdl_err(SDL_Init(SDL_INIT_AUDIO));
 
@@ -15,12 +19,14 @@ int main(){
     snippet_empty(&s1);
     snippet_empty(&s2);
 
-    snippet_fill_freq(&s1, 0.5, PITCH);
+    snippet_fill_freq(&s1, 0.3, PITCH);
+    snippet_attack(&s1, 0.1, linear);
+    snippet_release(&s1, 0.1, linear);
     snippet_fill_freq(&s2, 0.5, 600);
 
-    snippet_combine(&s, &s1, &s2);
     snippet_append(&s, &s1);
-    snippet_append(&s, &s2);
+    snippet_append(&s, &s1);
+    snippet_append(&s, &s1);
 
     play_snippet(&s);
     snippet_free(&s);

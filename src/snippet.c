@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define MIN(a, b) ((a) > (b) ? (b) : (a))
+
 void snippet_empty(Snippet *snippet){
     snippet->samples_cnt = 0;
     snippet->samples = NULL;
@@ -67,4 +69,32 @@ void snippet_append(Snippet *snippet, const Snippet *second){
         second->samples, 
         second->samples_cnt * sizeof(double)
     );
+}
+
+void snippet_attack(Snippet *snippet, double duration, InterpolationFunc interpolate){
+    if(duration <= 0) return;
+    int true_samples_duration = duration * SNIPPET_FREQ;
+    int samples_duration = MIN(true_samples_duration, snippet->samples_cnt);
+
+    double *curr = snippet->samples;
+    double *end = curr + samples_duration;
+
+    while (curr != end){
+        *curr = *curr * interpolate((curr - snippet->samples) / (double)true_samples_duration); 
+        curr++;
+    }
+}
+
+void snippet_release(Snippet *snippet, double duration, double (*interpolate)(double progress)){
+    if(duration <= 0) return;
+    int true_samples_duration = duration * SNIPPET_FREQ;
+    int samples_duration = MIN(true_samples_duration, snippet->samples_cnt);
+
+    double *end = snippet->samples + snippet->samples_cnt;
+    double *curr = end - samples_duration;
+
+    while (curr != end){
+        *curr = *curr * interpolate((end - curr) / (double)true_samples_duration); 
+        curr++;
+    }
 }
