@@ -2,10 +2,13 @@
 
 #include "snippet.h"
 
+#define T (0.2)
+
 int main();
 void panic_if_sdl_err(int err);
 void panic(const char *msg);
 void play_snippet(const Snippet *snippet);
+
 
 double interpolate_linear(double progress){
     return progress;
@@ -35,8 +38,20 @@ double impose_simple_mix_low(double first, double second){
     return first * 0.5 + second * 0.5;
 }
 
-double interpolate_440_to_600(double progress){
-    return 440 + (600 - 440) * progress;
+
+
+double __from_freq, __to_freeq;
+void interpolate_range_set(double from_freq, double to_freq){
+    __from_freq = from_freq;
+    __to_freeq = to_freq;
+}
+
+double interpolate_range(double progress){
+    return __from_freq + (__to_freeq - __from_freq) * progress;
+}
+
+double freq_distribution(double freq){
+    return freq;
 }
 
 int main(){
@@ -44,15 +59,19 @@ int main(){
 
     #define SNIPPS 10
 
-    Snippet s[SNIPPS];
-    for (int i = 0; i < SNIPPS; i++) snippet_empty(s + i);
-    
-    snippet_fill_freq_inter(s, 1.0, interpolate_440_to_600);
+    Snippet s, s1;
+    snippet_empty(&s);
+    snippet_empty(&s1);
 
-    play_snippet(s);
+    snippet_fill_noise(&s1, 1.0, 60, 60, freq_distribution);
 
-    for (int i = 0; i < SNIPPS; i++) snippet_free(s + i);
-    
+    snippet_append(&s, &s1);
+
+
+    play_snippet(&s);
+
+    snippet_free(&s);
+    snippet_free(&s1);
 
     return 0;
 }

@@ -142,3 +142,41 @@ void snippet_fill_freq_inter(Snippet *snippet, double seconds_duration, Interpol
         curr++;
     }
 }
+
+void snippet_fill_noise(Snippet *snippet, double seconds_duration, double freq, double freq_dispertion, double (*preform_freq)(double freq)){
+
+    Snippet tmp;
+    snippet_empty(&tmp);
+
+    while (seconds_duration > 0){
+        double dispertion_factor = (rand() % 1000) * 0.001;
+        double curr_noise_freq_offset = freq_dispertion * (dispertion_factor - 0.5);
+        double curr_noise_freq = preform_freq(freq + curr_noise_freq_offset);
+
+        snippet_fill_period(&tmp, curr_noise_freq);
+        snippet_append(snippet, &tmp);
+        seconds_duration -= tmp.samples_cnt / (double)SNIPPET_FREQ;
+    }
+
+    snippet->samples = realloc(
+        snippet->samples,
+        (snippet->samples_cnt -= seconds_duration * SNIPPET_FREQ) * sizeof(double)
+    );
+
+    snippet_free(&tmp);
+}
+
+void snippet_fill_period(Snippet *snippet, double freq){
+    snippet->samples = realloc(
+        snippet->samples,
+        (snippet->samples_cnt = SNIPPET_FREQ / freq) * sizeof(double)
+    );
+
+    double *curr = snippet->samples;
+    double *end = curr + snippet->samples_cnt;
+
+    while (curr != end){
+        *curr = sin((end - curr) * 2.0 * M_PI * freq / SNIPPET_FREQ);
+        curr++;
+    }
+}

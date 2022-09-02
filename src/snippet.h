@@ -50,6 +50,12 @@ double note_freq(double note_number);
 // initializes snippet with data using interpolate
 void snippet_fill_freq_inter(Snippet *snippet, double seconds_duration, InterpolationFunc interpolate);
 
+// initializes snippet with noise, that contains frequances in freq in range [freq - freq_dispertion * 0.5; freq + freq_dispertion * 0.5]
+// in proportion dispertion_interlopation
+void snippet_fill_noise(Snippet *snippet, double seconds_duration, double freq, double freq_dispertion, double (*preform_freq)(double freq));
+
+void snippet_fill_period(Snippet *snippet, double freq);
+
 // clears snippet buffer
 void snippet_free(Snippet *snippet);
 
