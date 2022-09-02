@@ -184,3 +184,19 @@ void snippet_fill_period(Snippet *snippet, double freq){
         curr++;
     }
 }
+
+void snippet_volume_scale(Snippet *snippet, double volume_scale){
+    double *curr = snippet->samples;
+    double *end = curr + snippet->samples_cnt;
+
+    while (curr != end){
+        *curr = *curr * volume_scale;
+        if(*curr > 1.0){
+            *curr = 1.0;
+        }
+        else if(*curr < -1.0){
+            *curr = -1.0;
+        }
+        curr++;
+    }
+}

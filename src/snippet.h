@@ -57,6 +57,8 @@ void snippet_fill_noise(Snippet *snippet, double seconds_duration, double freq, 
 // fills one period using freq
 void snippet_fill_period(Snippet *snippet, double freq);
 
+void snippet_volume_scale(Snippet *snippet, double volume_scale);
+
 // clears snippet buffer
 void snippet_free(Snippet *snippet);
 
