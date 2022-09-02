@@ -54,6 +54,7 @@ void snippet_fill_freq_inter(Snippet *snippet, double seconds_duration, Interpol
 // in proportion dispertion_interlopation
 void snippet_fill_noise(Snippet *snippet, double seconds_duration, double freq, double freq_dispertion, double (*preform_freq)(double freq));
 
+// fills one period using freq
 void snippet_fill_period(Snippet *snippet, double freq);
 
 // clears snippet buffer

@@ -59,19 +59,27 @@ int main(){
 
     #define SNIPPS 10
 
-    Snippet s, s1;
+    Snippet s, s1, s2, s3;
     snippet_empty(&s);
     snippet_empty(&s1);
+    snippet_empty(&s2);
+    snippet_empty(&s3);
 
-    snippet_fill_noise(&s1, 1.0, 60, 60, freq_distribution);
+    snippet_fill_noise(&s1, 1.0, note_freq(-36), 20, freq_distribution);
+    snippet_fill_noise(&s2, 1.0, note_freq(-48), 20, freq_distribution);
 
-    snippet_append(&s, &s1);
+    snippet_append(&s3, &s1);
+    snippet_impose(&s3, &s2, impose_simple_mix);
 
+    snippet_attack(&s3, 0.8, interpolate_sqrt);
+    snippet_release(&s3, 0.8, interpolate_sqr);
 
     play_snippet(&s);
 
     snippet_free(&s);
     snippet_free(&s1);
+    snippet_free(&s2);
+    snippet_free(&s3);
 
     return 0;
 }
